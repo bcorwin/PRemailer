@@ -1,4 +1,9 @@
-PRemailer
-=========
+PR Emailer
+===========
 
-PR Emailer for AJ
+###How to use:
+
+###Change log:
+
+###Special thanks to:
+* Kevin for his help debugging.
