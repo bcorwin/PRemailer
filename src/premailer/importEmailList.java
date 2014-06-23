@@ -70,8 +70,8 @@ public class importEmailList {
                 Cell cell = body.getCell(colNum, i);
                 if(noEmpty == true) {
                     if (cell.getType() != CellType.EMPTY) colList.add(cell.getContents());
-                    else throw new Error("Column '" + col + "' is missing a value in sheet '"
-                            +sheetName + "'.");
+                    else throw new Error("Column '" + col + "' is missing a value (row #"
+                            + i + ") in sheet '" + sheetName + "'.");
                 } else colList.add(cell.getContents());
             }
         }

@@ -46,18 +46,15 @@ public class PRemailer {
             
             String[] allAgencies, allAgents, allEmails;
             allAgencies = inputFile.readCol("Agency List", "Agency", true);
-            String [] emailsToSend = getEmailList(allAgencies, "Agency List", agencyList);
-            
             allAgents = inputFile.readCol("Agency List", "Agent Names", true);
             allEmails = inputFile.readCol("Agency List", "Agent Emails", true);
-            //Build list of agencies
-            Agency [] agencies = new Agency[emailsToSend.length - 1];
-            for(int agnt = 1; agnt < emailsToSend.length; agnt++) {
-                agencies[agnt-1] = new Agency(allAgencies[agnt], allAgents[agnt], allEmails[agnt]);
-                //Build tables
+           
+            Agency [] agencies = getAgencyList(allAgencies, agencyList, allAgents, allEmails);
+            //Build tables
+            for(int agnt = 0; agnt < agencies.length; agnt++) {
                 for(int row = 1; row < agencyList.length; row++) {
-                    if(agencies[agnt-1].Agency.equals(agencyList[row])) {
-                        agencies[agnt-1].addRow(timeList[row], nameList[row], roleList[row], noteList[row]);
+                    if(agencies[agnt].Agency.equals(agencyList[row])) {
+                        agencies[agnt].addRow(timeList[row], nameList[row], roleList[row], noteList[row]);
                     }
                 }
             }
@@ -68,22 +65,38 @@ public class PRemailer {
             throw new Error();
         }
     }
-    public static String[] getEmailList(String[] inArray, String sheetName, String[] chkArray) {
-        List<String> unique = new ArrayList<String>();
-        List<String> outList = new ArrayList<String>();
-        List<String> inList = Arrays.asList(chkArray);
-        for(int i = 0; i < inArray.length; i++) {
-            if(unique.contains(inArray[i])) {
-                throw new Error("Value '" + inArray[i]
-                        + "' appears more than once in '" + sheetName  + "'.");
+    public static Agency[] getAgencyList(String[] agencyArray,
+            String[] agntArray, String[] allAgents, String[] allEmails) {
+        //Check that agencyList is unique
+        List<String> unique = new ArrayList();
+        for(int i = 1; i < agencyArray.length; i++) {
+            String chkAgnt = agencyArray[i].toUpperCase().trim();
+            if(unique.contains(chkAgnt)) {
+                throw new Error("The agency '" + chkAgnt
+                        + "' appears more than once in the sheet 'Agency List'.");
             } else {
-                unique.add(inArray[i]);
-                if(inList.contains(inArray[i])) {
-                    outList.add(inArray[i]);
-                }
+                unique.add(chkAgnt);
             }
         }
-        String[] output = outList.toArray(new String[outList.size()]);
+        //Check that all values of agntArray are in agencyList
+         List<String> agencyList = Arrays.asList(agencyArray);
+        for(int j = 1; j < agntArray.length; j++) {
+            String chkAgnt = agntArray[j];
+            if(!agencyList.contains(chkAgnt)) {
+                throw new Error("The agent '" + chkAgnt
+                        + "' does not exist in the sheet 'Agency List'.");
+            }
+        }
+        //Output overlapping list
+        List<Agency> outList = new ArrayList();
+        List<String> inList = Arrays.asList(agntArray);
+        for(int k = 1; k < agencyArray.length; k++) {
+            if(inList.contains(agencyArray[k])) {
+                Agency addAgnt = new Agency(agencyArray[k], allAgents[k], allEmails[k]);
+                outList.add(addAgnt);
+            }
+        }
+        Agency[] output = outList.toArray(new Agency[outList.size()]);
         return output;
     }
 }
