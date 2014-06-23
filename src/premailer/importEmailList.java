@@ -24,8 +24,14 @@ import jxl.read.biff.BiffException;
 public class importEmailList {
     private String inputFile;
     private Workbook w;
+    public String errorList = "";
+    
+    public void addError(String errorMsg) {
+        this.errorList += errorMsg + "<br>";
+    }
     
     public void setInputFile(String inputFile) throws IOException {
+        
         this.inputFile = inputFile;
         File inputWorkbook = new File(inputFile);
         try {
@@ -39,7 +45,8 @@ public class importEmailList {
         //Check that sheet exists
         String sheetList = Arrays.toString(w.getSheetNames());
         if(sheetList.contains(sheetName) == false) {
-            throw new Error("Missing required sheet, '" + sheetName + "'.");
+            addError("Missing required sheet, '" + sheetName + "'.");
+            throw new Error(this.errorList);
         }
         else {
             Sheet body = w.getSheet(sheetName);
@@ -61,8 +68,9 @@ public class importEmailList {
                     }
                 }
                 if(colNum == -1) {
-                    throw new Error("Column '" + col
+                    addError("Column '" + col
                             + "' does not exist in sheet '" + sheetName + "'.");
+                    throw new Error(this.errorList);
                 }
             }
 
@@ -70,7 +78,7 @@ public class importEmailList {
                 Cell cell = body.getCell(colNum, i);
                 if(noEmpty == true) {
                     if (cell.getType() != CellType.EMPTY) colList.add(cell.getContents());
-                    else throw new Error("Column '" + col + "' is missing a value (row #"
+                    else addError("Column '" + col + "' is missing a value (row #"
                             + i + ") in sheet '" + sheetName + "'.");
                 } else colList.add(cell.getContents());
             }
@@ -94,5 +102,11 @@ public class importEmailList {
             if(colMax > totMax) totMax = colMax;
         }
         return totMax;
+    }
+    public void chkErrors() {
+        if(!this.errorList.equals("")) throw new Error(this.errorList);
+    }
+    public void clrErrors() {
+        this.errorList = "";
     }
 }

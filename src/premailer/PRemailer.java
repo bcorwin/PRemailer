@@ -17,12 +17,12 @@ import java.util.List;
  * @author bcorwin
  */
 public class PRemailer {
+    static public importEmailList inputFile = new importEmailList();
 
     /**
      * @param args the command line arguments
      */
     public static String[] genEmailBody(String filename) {
-        importEmailList inputFile = new importEmailList();
         try {
             inputFile.setInputFile(filename);
             String[] emailBody;
@@ -32,11 +32,23 @@ public class PRemailer {
             throw new Error("Error reading file. May not exist or not in xls format.");
         }
     }
-    
-    public static Agency[] genAgencies(String filename) {
-        importEmailList inputFile = new importEmailList();
+    public static String[] getUserList(String filename) {
         try {
             inputFile.setInputFile(filename);
+        } catch(IOException e) {
+            throw new Error("Unknown error reading file.");
+        }
+        String[] output;
+        output = inputFile.readCol("User List", "User Emails", false);
+        return output;
+    }
+    
+    public static Agency[] genAgencies(String filename) {
+        try {
+            inputFile.setInputFile(filename);
+            } catch(IOException e) {
+                throw new Error("Unknown error reading file.");
+            }
             String[] agencyList, nameList, timeList, roleList, noteList;
             agencyList = inputFile.readCol("Actor List", "Agency", true);
             nameList = inputFile.readCol("Actor List", "Name", true);
@@ -48,7 +60,7 @@ public class PRemailer {
             allAgencies = inputFile.readCol("Agency List", "Agency", true);
             allAgents = inputFile.readCol("Agency List", "Agent Names", true);
             allEmails = inputFile.readCol("Agency List", "Agent Emails", true);
-           
+            
             Agency [] agencies = getAgencyList(allAgencies, agencyList, allAgents, allEmails);
             //Build tables
             for(int agnt = 0; agnt < agencies.length; agnt++) {
@@ -60,10 +72,6 @@ public class PRemailer {
             }
             Arrays.sort(agencies);
             return agencies;
-            
-        } catch(IOException e) {
-            throw new Error();
-        }
     }
     public static Agency[] getAgencyList(String[] agencyArray,
             String[] agntArray, String[] allAgents, String[] allEmails) {
@@ -72,7 +80,7 @@ public class PRemailer {
         for(int i = 1; i < agencyArray.length; i++) {
             String chkAgnt = agencyArray[i].toUpperCase().trim();
             if(unique.contains(chkAgnt)) {
-                throw new Error("The agency '" + chkAgnt
+                inputFile.addError("The agency '" + chkAgnt
                         + "' appears more than once in the sheet 'Agency List'.");
             } else {
                 unique.add(chkAgnt);
@@ -83,7 +91,7 @@ public class PRemailer {
         for(int j = 1; j < agntArray.length; j++) {
             String chkAgnt = agntArray[j];
             if(!agencyList.contains(chkAgnt)) {
-                throw new Error("The agent '" + chkAgnt
+                inputFile.addError("The agent '" + chkAgnt
                         + "' does not exist in the sheet 'Agency List'.");
             }
         }

@@ -50,8 +50,9 @@ public class Agency implements Comparable<Agency>{
                 }
             }
         } catch (java.text.ParseException e) {
-            throw new Error("The formating for the column 'Time' may be incorrect."
-                    + " It should be in 'hh:mm am/pm'.");
+            PRemailer.inputFile.addError("The formating for the column 'Time' may be incorrect."
+                    + " It should be in the form 'HH:MM AM/PM'. See the entry for " + this.Agency + "/"
+                    + name + ".");
         }
         String[][] newTable = new String[maxRow + 1][5];
         String[][] oldTable = this.Table;

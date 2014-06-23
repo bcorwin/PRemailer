@@ -7,12 +7,14 @@
 package premailer;
 
 import java.io.File;
+import java.util.Arrays;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import static premailer.PRemailer.genAgencies;
 import static premailer.PRemailer.genEmailBody;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import static premailer.PRemailer.getUserList;
 
 /**
  *
@@ -21,7 +23,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class GUI extends javax.swing.JFrame {
     private static String[] emailBody;
     private static Agency[] Agencies;
-    private String verNum  = "0.8";
+    private String verNum  = "0.9";
     private int currNum, numAgnts, loaded = 0;
     private boolean isModified = false;
     FileNameExtensionFilter xlsFilter = new FileNameExtensionFilter("XLS files only", "xls");
@@ -46,7 +48,6 @@ public class GUI extends javax.swing.JFrame {
         fileChooser = new javax.swing.JFileChooser();
         sendDialog = new javax.swing.JDialog();
         jLabel2 = new javax.swing.JLabel();
-        senderEmail = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         senderPass = new javax.swing.JPasswordField();
         jSeparator1 = new javax.swing.JSeparator();
@@ -57,6 +58,7 @@ public class GUI extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jLabel5 = new javax.swing.JLabel();
         testEmailField = new javax.swing.JTextField();
+        senderEmailBox = new javax.swing.JComboBox();
         sendingDialog = new javax.swing.JDialog();
         jScrollPane2 = new javax.swing.JScrollPane();
         sendingPane = new javax.swing.JTextPane();
@@ -93,8 +95,6 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel2.setText("Sender email:");
 
-        senderEmail.setText("bcoreserver@gmail.com");
-
         jLabel3.setText("Sender pw:");
 
         jLabel4.setText("CC:");
@@ -120,6 +120,8 @@ public class GUI extends javax.swing.JFrame {
 
         testEmailField.setToolTipText("If filled in, all emails will be sent to this address.");
 
+        senderEmailBox.setEditable(true);
+
         javax.swing.GroupLayout sendDialogLayout = new javax.swing.GroupLayout(sendDialog.getContentPane());
         sendDialog.getContentPane().setLayout(sendDialogLayout);
         sendDialogLayout.setHorizontalGroup(
@@ -135,8 +137,8 @@ public class GUI extends javax.swing.JFrame {
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(sendDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(senderEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
-                            .addComponent(senderPass)))
+                            .addComponent(senderPass)
+                            .addComponent(senderEmailBox, 0, 271, Short.MAX_VALUE)))
                     .addGroup(sendDialogLayout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -157,7 +159,7 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(sendDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(senderEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(senderEmailBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(sendDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -358,7 +360,7 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(exitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 631, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
                             .addComponent(versionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(sendButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -372,15 +374,14 @@ public class GUI extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(emailLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(discardButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(prevButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -389,40 +390,40 @@ public class GUI extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(toField)
-                                    .addComponent(subjectField)))
-                            .addGroup(layout.createSequentialGroup()
+                                    .addComponent(subjectField))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane1)))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(saveButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(discardButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(fileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(browseButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(subjectField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(saveButton)
-                    .addComponent(discardButton))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(fileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(browseButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(subjectField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6)
+                            .addComponent(discardButton)))
+                    .addComponent(emailLabel, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(toField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addComponent(emailLabel))
+                    .addComponent(saveButton)
+                    .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(prevButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(prevButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -458,13 +459,20 @@ public class GUI extends javax.swing.JFrame {
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
         String filename = fileTextField.getText();
+        emailTextPane.setText("");
         try {
+            PRemailer.inputFile.clrErrors();
             emailBody = genEmailBody(filename);
             Agencies = genAgencies(filename);
             numAgnts = Agencies.length;
+            String[] userList = getUserList(filename);
+            senderEmailBox.removeAllItems();
+            for(int i = 1; i < userList.length; i++) {
+                senderEmailBox.addItem(userList[i]);
+            }
+            PRemailer.inputFile.chkErrors();
             DefaultListModel addList = new DefaultListModel();
             for(int agnt = 0; agnt < numAgnts; agnt++) {
-//                Agencies[agnt].sortTable("Time");
                 Agencies[agnt].setEmail(emailBody);
                 addList.addElement(Agencies[agnt].Agency);
             }
@@ -473,8 +481,8 @@ public class GUI extends javax.swing.JFrame {
             emailList.setSelectedIndex(currNum);
             loaded = 1;
         } catch (Error e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(),
-                "Error reading file.", JOptionPane.ERROR_MESSAGE);
+            emailTextPane.setText("<font color = \'red\'>" + e.getMessage() + "</font>");
+            loaded = 0;
         }
     }//GEN-LAST:event_loadButtonActionPerformed
 
@@ -506,7 +514,7 @@ public class GUI extends javax.swing.JFrame {
         for(int agnt = 0; agnt < numAgnts; agnt++) {
             sendDialog.setVisible(false);
             sendingDialog.setVisible(true);
-            results += Agencies[agnt].sendEmail(senderEmail.getText(), senderPass.getText()
+            results += Agencies[agnt].sendEmail(senderEmailBox.getSelectedItem().toString(), senderPass.getText()
                     , ccField.getText(), testEmailField.getText());
         }
         results += "<br>If all emails failed: the sender email/password may be wrong or not gmail."
@@ -624,7 +632,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton sendAllButton;
     private javax.swing.JButton sendButton;
     private javax.swing.JDialog sendDialog;
-    private javax.swing.JTextField senderEmail;
+    private javax.swing.JComboBox senderEmailBox;
     private javax.swing.JPasswordField senderPass;
     private javax.swing.JDialog sendingDialog;
     private javax.swing.JTextPane sendingPane;
