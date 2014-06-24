@@ -3,7 +3,21 @@ PR Emailer
 
 ###How to use:
 
+###To do:
+
+* Have a progress bar on the loading screen.
+
+* Fix the issue with spaces in editting the email body.
+
 ###Change log:
+
+* Version 0.99
+  
+  * Added row numbers to all errors that require it (added 1 to the index values).
+  
+  * Can now have more than once cc.
+  
+  * Can now edit the body of the email. Known issue, it does not track changes to Spaces or New lines.
 
 * Version 0.9
 

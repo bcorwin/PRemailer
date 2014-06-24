@@ -66,7 +66,8 @@ public class PRemailer {
             for(int agnt = 0; agnt < agencies.length; agnt++) {
                 for(int row = 1; row < agencyList.length; row++) {
                     if(agencies[agnt].Agency.equals(agencyList[row])) {
-                        agencies[agnt].addRow(timeList[row], nameList[row], roleList[row], noteList[row]);
+                        agencies[agnt].addRow(timeList[row], nameList[row], 
+                                roleList[row], noteList[row], row + 1);
                     }
                 }
             }
@@ -81,7 +82,8 @@ public class PRemailer {
             String chkAgnt = agencyArray[i].toUpperCase().trim();
             if(unique.contains(chkAgnt)) {
                 inputFile.addError("The agency '" + chkAgnt
-                        + "' appears more than once in the sheet 'Agency List'.");
+                        + "' appears more than once in the sheet 'Agency List'."
+                        + " See row #" + (i+1) + ".");
             } else {
                 unique.add(chkAgnt);
             }
@@ -92,7 +94,8 @@ public class PRemailer {
             String chkAgnt = agntArray[j];
             if(!agencyList.contains(chkAgnt)) {
                 inputFile.addError("The agent '" + chkAgnt
-                        + "' does not exist in the sheet 'Agency List'.");
+                        + "' does not exist in the sheet 'Agency List'."
+                        + " See row #" + (j+1) + ".");
             }
         }
         //Output overlapping list

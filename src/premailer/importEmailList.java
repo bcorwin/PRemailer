@@ -76,11 +76,11 @@ public class importEmailList {
 
             for (int i = 0; i <= numRows; i++) {
                 Cell cell = body.getCell(colNum, i);
-                if(noEmpty == true) {
-                    if (cell.getType() != CellType.EMPTY) colList.add(cell.getContents());
-                    else addError("Column '" + col + "' is missing a value (row #"
-                            + i + ") in sheet '" + sheetName + "'.");
-                } else colList.add(cell.getContents());
+                colList.add(cell.getContents());
+                if(noEmpty == true & cell.getType() == CellType.EMPTY) {
+                    addError("Column '" + col + "' is missing a value in sheet '"
+                            + sheetName + "'. See row #" + (i+1) +".");
+                }
             }
         }
         String[] output = colList.toArray(new String[colList.size()]);
